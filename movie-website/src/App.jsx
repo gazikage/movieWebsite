@@ -1,8 +1,11 @@
 import { useState , useEffect} from 'react'
+import { useDebounce } from 'react-use'
+import { Client } from "appwrite";
 import './App.css'
 import Search from './components/search';
 import Spinner from './components/spinner';
 import MovieCard from './components/MovieCard';
+
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -20,6 +23,10 @@ const [searchTerm , setSearchTerm] = useState("");
 const [dataBox, setDataBox]= useState('');
 const [errorMessage, setErrorMessage] = useState([]);
 const [isLoading, setIsLoading] = useState(false);
+const [debounceTerm, useDebounceTerm ] = useState('')
+
+
+useDebounce(() => useDebounceTerm(searchTerm), 750, [searchTerm])
 
 
 const fetchMovies = async ( query ='') => {
@@ -55,8 +62,8 @@ catch (error) {
   }
 }
 
-useEffect(()=>{fetchMovies(searchTerm);}, 
-[searchTerm])
+useEffect(()=>{fetchMovies(debounceTerm);}, 
+[debounceTerm])
 
   return (
     <main>
